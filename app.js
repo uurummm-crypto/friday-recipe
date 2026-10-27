@@ -1449,4 +1449,185 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('scroll-bottom-btn')?.addEventListener('click', () => {
     window.scrollBy({ top: 400, behavior: 'smooth' });
   });
+
+  // パスコードセキュリティ初期化
+  LockSecurity.init();
 });
+
+// ==========================================
+// 10. Passcode Lock & Security Logic
+// ==========================================
+
+const LockSecurity = {
+  currentInput: '',
+  defaultPasscode: '1234',
+
+  getPasscode() {
+    return localStorage.getItem('friday_passcode') || this.defaultPasscode;
+  },
+
+  setPasscode(code) {
+    localStorage.setItem('friday_passcode', code);
+  },
+
+  isDeviceUnlocked() {
+    return localStorage.getItem('friday_unlocked') === 'true';
+  },
+
+  lockDevice() {
+    localStorage.removeItem('friday_unlocked');
+    this.currentInput = '';
+    this.updateDots();
+    const overlay = document.getElementById('lock-screen-overlay');
+    if (overlay) overlay.classList.remove('unlocked');
+    const msg = document.getElementById('lock-hint-msg');
+    if (msg) {
+      msg.textContent = '4桁のパスコードを入力してください';
+      msg.classList.remove('error');
+    }
+  },
+
+  unlockDevice() {
+    const remember = document.getElementById('lock-remember-device')?.checked;
+    if (remember) {
+      localStorage.setItem('friday_unlocked', 'true');
+    }
+    const overlay = document.getElementById('lock-screen-overlay');
+    if (overlay) overlay.classList.add('unlocked');
+    this.currentInput = '';
+    this.updateDots();
+    showToast('🔓 手帳を開きました！週末クッキングへようこそ');
+  },
+
+  handleKeyInput(key) {
+    if (key === 'clear') {
+      this.currentInput = '';
+      this.updateDots();
+      return;
+    }
+    if (key === 'back') {
+      this.currentInput = this.currentInput.slice(0, -1);
+      this.updateDots();
+      return;
+    }
+    if (/^[0-9]$/.test(key)) {
+      if (this.currentInput.length < 4) {
+        this.currentInput += key;
+        this.updateDots();
+        if (this.currentInput.length === 4) {
+          this.verifyPasscode();
+        }
+      }
+    }
+  },
+
+  updateDots() {
+    const dots = document.querySelectorAll('.lock-dot');
+    dots.forEach((dot, idx) => {
+      if (idx < this.currentInput.length) {
+        dot.classList.add('filled');
+      } else {
+        dot.classList.remove('filled');
+      }
+    });
+  },
+
+  verifyPasscode() {
+    const correctCode = this.getPasscode();
+    const dotsRow = document.getElementById('lock-dots');
+    const msg = document.getElementById('lock-hint-msg');
+
+    if (this.currentInput === correctCode) {
+      // 認証成功
+      if (msg) {
+        msg.textContent = '✨ ロック解除成功！';
+        msg.classList.remove('error');
+      }
+      setTimeout(() => {
+        this.unlockDevice();
+      }, 250);
+    } else {
+      // 認証失敗
+      if (dotsRow) dotsRow.classList.add('shake');
+      if (msg) {
+        msg.textContent = '❌ 暗証番号が違います';
+        msg.classList.add('error');
+      }
+      setTimeout(() => {
+        if (dotsRow) dotsRow.classList.remove('shake');
+        this.currentInput = '';
+        this.updateDots();
+      }, 550);
+    }
+  },
+
+  init() {
+    // すでにこの端末で解除済みなら開いた状態にする
+    if (this.isDeviceUnlocked()) {
+      document.getElementById('lock-screen-overlay')?.classList.add('unlocked');
+    }
+
+    // テンキーパッドボタン
+    document.querySelectorAll('.keypad-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-key');
+        this.handleKeyInput(key);
+      });
+    });
+
+    // キーボードの数字入力対応
+    window.addEventListener('keydown', (e) => {
+      const overlay = document.getElementById('lock-screen-overlay');
+      if (overlay && !overlay.classList.contains('unlocked')) {
+        if (/^[0-9]$/.test(e.key)) {
+          this.handleKeyInput(e.key);
+        } else if (e.key === 'Backspace') {
+          this.handleKeyInput('back');
+        } else if (e.key === 'Escape') {
+          this.handleKeyInput('clear');
+        }
+      }
+    });
+
+    // ヘッダーのロックボタン
+    document.getElementById('lock-site-btn')?.addEventListener('click', () => {
+      this.lockDevice();
+      showToast('🔒 手帳に鍵をかけました');
+    });
+
+    // 暗証番号変更モーダル
+    const changeModal = document.getElementById('change-passcode-modal');
+    document.getElementById('change-passcode-btn')?.addEventListener('click', () => {
+      changeModal?.classList.remove('hidden');
+    });
+    document.getElementById('change-passcode-close')?.addEventListener('click', () => {
+      changeModal?.classList.add('hidden');
+    });
+
+    // 暗証番号変更フォーム送信
+    document.getElementById('change-passcode-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cur = document.getElementById('cur-passcode-input')?.value.trim();
+      const n1 = document.getElementById('new-passcode-input')?.value.trim();
+      const n2 = document.getElementById('confirm-passcode-input')?.value.trim();
+
+      if (cur !== this.getPasscode()) {
+        showToast('❌ 現在の暗証番号が正しくありません');
+        return;
+      }
+      if (!/^[0-9]{4}$/.test(n1)) {
+        showToast('❌ 新しい暗証番号は4桁の数字で入力してください');
+        return;
+      }
+      if (n1 !== n2) {
+        showToast('❌ 確認用の暗証番号が一致しません');
+        return;
+      }
+
+      this.setPasscode(n1);
+      changeModal?.classList.add('hidden');
+      document.getElementById('change-passcode-form')?.reset();
+      showToast(`🔑 暗証番号を「${n1}」に変更しました！`);
+    });
+  }
+};

@@ -1128,3 +1128,230 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===================================================
+   Passcode Lock & Security Styles
+   =================================================== */
+
+.btn-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fbf5ef;
+  color: #726860;
+  border: 1px solid #ebd9c8;
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-lock:hover {
+  background: #f2e2d0;
+  color: var(--color-orange-main);
+  border-color: var(--color-orange-main);
+  transform: translateY(-1px);
+}
+
+.lock-screen-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(254, 252, 249, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
+}
+
+.lock-screen-overlay.unlocked {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+.lock-card {
+  background: #ffffff;
+  border: 2px solid #f2e4d6;
+  border-radius: 28px;
+  padding: 32px 24px 24px 24px;
+  max-width: 350px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 16px 45px rgba(120, 80, 40, 0.14);
+  animation: lockCardPop 0.3s ease-out;
+}
+
+@keyframes lockCardPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.lock-mascot-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.lock-mascot {
+  font-size: 1.8rem;
+}
+
+.lock-icon-badge {
+  background: #fff3e6;
+  border: 2px solid #fedbb5;
+  font-size: 1.5rem;
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(230, 126, 34, 0.15);
+}
+
+.lock-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-text-title);
+  margin-bottom: 4px;
+}
+
+.lock-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-text-subtle);
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+
+.lock-subtitle.error {
+  color: #e53935;
+  font-weight: 700;
+}
+
+.lock-dots-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.lock-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #d4c5b6;
+  background: transparent;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lock-dot.filled {
+  background: var(--color-orange-main);
+  border-color: var(--color-orange-main);
+  transform: scale(1.18);
+  box-shadow: 0 0 10px rgba(230, 126, 34, 0.45);
+}
+
+.lock-dots-row.shake {
+  animation: shakeDots 0.45s ease-in-out;
+}
+
+.lock-dots-row.shake .lock-dot {
+  border-color: #e53935;
+  background: #ffebee;
+}
+
+@keyframes shakeDots {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+
+.lock-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 250px;
+  margin: 0 auto 18px auto;
+}
+
+.keypad-btn {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: 1.5px solid #eddcd0;
+  background: #fcf9f6;
+  color: #38302a;
+  font-family: inherit;
+  font-size: 1.45rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.keypad-btn:hover {
+  background: #f5e7db;
+  border-color: var(--color-orange-main);
+  transform: translateY(-2px);
+}
+
+.keypad-btn:active {
+  background: var(--color-orange-main);
+  color: #ffffff;
+  transform: scale(0.92);
+}
+
+.keypad-btn.keypad-func {
+  font-size: 1.1rem;
+  background: #f3ece4;
+  color: #807267;
+  border-color: transparent;
+}
+
+.keypad-btn.keypad-func:hover {
+  background: #e8ded4;
+  color: #2b231d;
+}
+
+.lock-options {
+  margin-bottom: 12px;
+}
+
+.lock-remember-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #7a6e63;
+  cursor: pointer;
+  user-select: none;
+}
+
+.lock-remember-label input[type="checkbox"] {
+  accent-color: var(--color-orange-main);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.lock-default-note {
+  font-size: 0.78rem;
+  color: #9d8f83;
+  background: #faf6f0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: inline-block;
+}

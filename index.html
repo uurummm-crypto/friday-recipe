@@ -41,6 +41,14 @@
             <span class="btn-icon">✦</span>
             <span>AI提案</span>
           </button>
+          <button id="lock-site-btn" class="btn-lock" title="手帳に鍵をかける">
+            <span class="btn-icon">🔒</span>
+            <span>ロック</span>
+          </button>
+          <button id="change-passcode-btn" class="btn-lock" title="暗証番号を変更">
+            <span class="btn-icon">🔑</span>
+            <span>暗証番号</span>
+          </button>
         </div>
       </div>
 
@@ -327,6 +335,80 @@
         </div>
         <button type="submit" class="btn-orange" style="width:100%; padding:12px; margin-top:6px;">記録ノートに保存</button>
       </form>
+    </div>
+  </div>
+
+  <!-- パスコード変更モーダル -->
+  <div id="change-passcode-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="max-width:380px;">
+      <button id="change-passcode-close" class="modal-close-icon">✕</button>
+      <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">🔑 暗証番号（パスコード）の変更</h3>
+      <p style="font-size:0.86rem; color:#6f655b; margin-bottom:16px;">
+        手帳を開くための4桁の数字を変更できます。
+      </p>
+      <form id="change-passcode-form">
+        <div class="form-group">
+          <label>現在の暗証番号（初期値: 1234）</label>
+          <input type="password" id="cur-passcode-input" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required placeholder="4桁の数字">
+        </div>
+        <div class="form-group">
+          <label>新しい暗証番号（4桁の数字）</label>
+          <input type="password" id="new-passcode-input" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required placeholder="例: 7777">
+        </div>
+        <div class="form-group">
+          <label>新しい暗証番号（確認用）</label>
+          <input type="password" id="confirm-passcode-input" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required placeholder="もう一度入力">
+        </div>
+        <button type="submit" class="btn-orange" style="width:100%; padding:12px; margin-top:8px;">暗証番号を更新する</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- パスコードロック画面（手帳の鍵） -->
+  <div id="lock-screen-overlay" class="lock-screen-overlay">
+    <div class="lock-card">
+      <div class="lock-mascot-row">
+        <span class="lock-mascot">☕</span>
+        <span class="lock-icon-badge">🔒</span>
+        <span class="lock-mascot">🍮</span>
+      </div>
+      <h2 class="lock-title">金曜レシピ手帳</h2>
+      <p id="lock-hint-msg" class="lock-subtitle">4桁のパスコードを入力してください</p>
+
+      <!-- 4つのドット表示 -->
+      <div id="lock-dots" class="lock-dots-row">
+        <span class="lock-dot" data-idx="0"></span>
+        <span class="lock-dot" data-idx="1"></span>
+        <span class="lock-dot" data-idx="2"></span>
+        <span class="lock-dot" data-idx="3"></span>
+      </div>
+
+      <!-- テンキーパッド -->
+      <div class="lock-keypad">
+        <button type="button" class="keypad-btn" data-key="1">1</button>
+        <button type="button" class="keypad-btn" data-key="2">2</button>
+        <button type="button" class="keypad-btn" data-key="3">3</button>
+        <button type="button" class="keypad-btn" data-key="4">4</button>
+        <button type="button" class="keypad-btn" data-key="5">5</button>
+        <button type="button" class="keypad-btn" data-key="6">6</button>
+        <button type="button" class="keypad-btn" data-key="7">7</button>
+        <button type="button" class="keypad-btn" data-key="8">8</button>
+        <button type="button" class="keypad-btn" data-key="9">9</button>
+        <button type="button" class="keypad-btn keypad-func" data-key="clear">C</button>
+        <button type="button" class="keypad-btn" data-key="0">0</button>
+        <button type="button" class="keypad-btn keypad-func" data-key="back">⌫</button>
+      </div>
+
+      <div class="lock-options">
+        <label class="lock-remember-label">
+          <input type="checkbox" id="lock-remember-device" checked>
+          <span>この端末で次回から自動オープン</span>
+        </label>
+      </div>
+
+      <div class="lock-default-note">
+        💡 初期の暗証番号: <strong>1234</strong>
+      </div>
     </div>
   </div>
 
