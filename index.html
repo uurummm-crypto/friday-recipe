@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>金曜レシピ手帳 | 週末のごほうび＆30分時短おうちカフェ</title>
+  <meta name="description" content="週末の自炊を楽しむあなたへ。30分で作れるごはんとお菓子の手帳。毎週金曜日朝に新しいレシピをお届け！">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e67e22">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍮</text></svg>">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- トップヘッダー -->
+    <header class="site-header">
+      <div class="header-content">
+        <div class="brand-area">
+          <div class="brand-mascot">
+            <span class="mascot-cup">☕</span>
+            <span class="mascot-pudding">🍮</span>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title-row">
+              <h1 class="brand-title">金曜レシピ手帳</h1>
+              <span class="badge-weekly">週1更新</span>
+            </div>
+            <p class="brand-tagline">週末のごほうび＆30分時短おうちカフェ</p>
+          </div>
+        </div>
+
+        <div class="header-action-group">
+          <button id="next-friday-btn" class="btn-orange">
+            <span class="btn-icon">🔄</span>
+            <span>次の金曜</span>
+          </button>
+          <button id="ai-upgrade-btn" class="btn-lightblue">
+            <span class="btn-icon">✦</span>
+            <span>AI提案</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- メインナビゲーションタブ -->
+      <nav class="main-nav-tabs">
+        <button class="nav-tab-btn active" data-tab="weekly-recipes">
+          <span class="nav-icon">🍴</span>
+          <span>今週のレシピ</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="shopping-list-tab">
+          <span class="nav-icon">🛒</span>
+          <span>買い物リスト</span>
+          <span id="tab-cart-badge" class="nav-badge">2</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="favorites-tab">
+          <span class="nav-icon">💗</span>
+          <span>お気に入り</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="cooking-logs-tab">
+          <span class="nav-icon">📖</span>
+          <span>作った記録</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="curated-sites-tab">
+          <span class="nav-icon">🌐</span>
+          <span>人気サイトまとめ</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- オレンジのステータスバナー -->
+    <div class="orange-banner-bar">
+      <div class="banner-inner">
+        <div class="banner-left">
+          <span class="banner-icon">🔍</span>
+          <span id="banner-week-title" class="banner-title">【毎週金曜朝 更新】第1週の30分レシピセレクション</span>
+        </div>
+        <div class="banner-right">
+          <span class="banner-clock-icon">🕒</span>
+          <span id="banner-next-update">次回更新: 次の金曜日 07:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <main class="main-body">
+
+      <!-- ================= 1. 今週のレシピタブ ================= -->
+      <section id="pane-weekly-recipes" class="tab-content active">
+        <!-- フィルターチップ -->
+        <div class="filter-chip-row">
+          <button class="filter-pill active" data-filter="all">すべて (<span id="count-all">5</span>)</button>
+          <button class="filter-pill" data-filter="meal">🔍 主菜・副菜 (~30分)</button>
+          <button class="filter-pill" data-filter="sweet">🍰 お菓子・カフェスイーツ (~30分)</button>
+          <button class="filter-pill" data-filter="super-fast">⚡ 15分超時短</button>
+        </div>
+
+        <!-- レシピカードグリッド -->
+        <div class="recipe-cards-grid" id="recipe-list-container">
+          <!-- JSでレンダリング -->
+        </div>
+
+        <!-- ページ送り / もっと見る矢印 -->
+        <div class="scroll-down-hint">
+          <button id="scroll-bottom-btn" class="circle-arrow-btn" aria-label="さらに下を見る">↓</button>
+        </div>
+      </section>
+
+      <!-- ================= 2. 買い物リストタブ ================= -->
+      <section id="pane-shopping-list-tab" class="tab-content">
+        <div class="sheet-card">
+          <div class="sheet-card-header">
+            <div>
+              <h2>🛒 週末の買い物メモ</h2>
+              <p>レシピからワンタップで追加できます。スーパーでカゴに入れたらタップして消込！</p>
+            </div>
+            <button id="copy-shopping-sheet-btn" class="btn-orange" style="font-size:0.85rem; padding:6px 14px;">
+              📋 LINEに送る (コピー)
+            </button>
+          </div>
+
+          <div class="input-add-row">
+            <input type="text" id="sheet-custom-input" placeholder="買い足す食材を入力 (例: 牛乳、卵、バター)">
+            <button id="sheet-add-btn" class="btn-dark">追加する</button>
+          </div>
+
+          <ul id="sheet-shopping-list" class="sheet-list">
+            <!-- JSでレンダリング -->
+          </ul>
+
+          <div class="sheet-footer">
+            <button id="sheet-clear-checked-btn" class="btn-subtle">購入済みを一括削除</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. お気に入りタブ ================= -->
+      <section id="pane-favorites-tab" class="tab-content">
+        <div class="section-heading">
+          <h2>💗 お気に入りのレシピ</h2>
+          <p>作って美味しかったレシピや、また作りたいメニューです。</p>
+        </div>
+        <div id="favorites-list-container" class="recipe-cards-grid">
+          <!-- JSでレンダリング -->
+        </div>
+        <div id="fav-empty-box" class="empty-box hidden">
+          <div class="empty-icon">☕</div>
+          <h3>お気に入りはまだありません</h3>
+          <p>レシピカードの「💗」を押すとここにストックされます。</p>
+        </div>
+      </section>
+
+      <!-- ================= 4. 作った記録タブ ================= -->
+      <section id="pane-cooking-logs-tab" class="tab-content">
+        <div class="sheet-card">
+          <div class="sheet-card-header">
+            <div>
+              <h2>📖 週末の料理記録ノート</h2>
+              <p>作った日や感想、ちょっとしたアレンジのメモを残せます。</p>
+            </div>
+            <button id="open-new-log-modal-btn" class="btn-orange" style="font-size:0.85rem; padding:6px 14px;">
+              ✏️ 記録をつける
+            </button>
+          </div>
+
+          <div id="logs-container" class="logs-grid">
+            <!-- JSでレンダリング -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. 人気レシピサイトまとめタブ ================= -->
+      <section id="pane-curated-sites-tab" class="tab-content">
+        <div class="section-heading">
+          <h2>🌐 人気サイトの30分時短レシピ検索</h2>
+          <p>クックパッド、クラシル、DELISH KITCHEN、レタスクラブ、Nadiaの時短・簡単レシピへ直接ジャンプ！</p>
+        </div>
+
+        <div class="search-box-card">
+          <input type="text" id="curated-search-keyword" placeholder="気になる食材やメニューを入力 (例: 豚肉、ホットケーキミックス、パスタ)">
+          <button id="curated-search-submit" class="btn-orange">まとめて探す</button>
+        </div>
+
+        <div class="site-chips-recommend">
+          <span style="font-weight:700; font-size:0.82rem; color:#7d756d;">人気タグ:</span>
+          <button class="tag-quick-chip" data-q="フライパン 30分">🍳 ワンパンおかず</button>
+          <button class="tag-quick-chip" data-q="レンジ 時短 簡単">⚡ レンジだけ</button>
+          <button class="tag-quick-chip" data-q="ホットケーキミックス スイーツ 30分">🥞 HMおやつ</button>
+          <button class="tag-quick-chip" data-q="鶏肉 時短 殿堂入り">🍗 鶏肉メイン</button>
+        </div>
+
+        <div class="external-sites-grid" id="curated-sites-list">
+          <!-- JSでレンダリング -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="site-footer">
+      <p>☕ <strong>金曜レシピ手帳</strong> 🍮 週末のごほうび＆30分時短おうちカフェ</p>
+      <p class="sub-text">完全無料・毎週金曜日あさ更新 / スマホのホーム画面に追加して使えます</p>
+    </footer>
+  </div>
+
+  <!-- レシピ詳細モーダル -->
+  <div id="recipe-detail-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <button id="modal-close-x" class="modal-close-icon" aria-label="閉じる">✕</button>
+      <div id="modal-content-area">
+        <!-- JSで流し込み -->
+      </div>
+    </div>
+  </div>
+
+  <!-- AI提案モーダル -->
+  <div id="ai-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <button id="ai-modal-close" class="modal-close-icon" aria-label="閉じる">✕</button>
+      <div class="ai-box-header">
+        <span class="ai-sparkle">✦</span>
+        <div>
+          <h2>AIシェフの30分レシピ考案</h2>
+          <p>冷蔵庫の食材や気分から、今すぐ作れる時短レシピを考案します。</p>
+        </div>
+      </div>
+
+      <form id="ai-quick-form" class="ai-form">
+        <div class="form-group">
+          <label for="ai-in-category">作りたいもの</label>
+          <select id="ai-in-category">
+            <option value="meal">主菜・おかず・ごはん</option>
+            <option value="sweet">お菓子・カフェスイーツ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="ai-in-ingredients">使いたい食材</label>
+          <input type="text" id="ai-in-ingredients" placeholder="例: 豚肉ともやし / 卵とチョコ" value="豚バラ肉、キャベツ">
+        </div>
+        <div class="form-group-row">
+          <div>
+            <label for="ai-in-time">目標時間</label>
+            <select id="ai-in-time">
+              <option value="15">⚡ 15分 (超時短)</option>
+              <option value="20" selected>⏱️ 20分</option>
+              <option value="30">🥘 30分</option>
+            </select>
+          </div>
+          <div>
+            <label for="ai-in-taste">味付け</label>
+            <select id="ai-in-taste">
+              <option value="ポン酢・さっぱり">さっぱりポン酢</option>
+              <option value="甘辛・照り焼き" selected>甘辛・照り焼き</option>
+              <option value="濃厚・バター醤油">濃厚バター醤油</option>
+              <option value="カフェ風・クリーミー">カフェ風クリーミー</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" id="ai-generate-submit" class="btn-orange" style="width:100%; padding:12px; font-size:1rem; margin-top:8px;">
+          ✦ 30分レシピを提案してもらう
+        </button>
+      </form>
+
+      <div id="ai-generated-result" class="ai-result-panel hidden">
+        <!-- 生成結果 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- タイマーモーダル -->
+  <div id="timer-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="max-width: 380px; text-align: center;">
+      <button id="timer-modal-close" class="modal-close-icon">✕</button>
+      <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:4px;">⏱️ 30分キッチンタイマー</h3>
+      <p style="font-size:0.82rem; color:#7d756d; margin-bottom:16px;">30分でさくっと完成させましょう！</p>
+      
+      <div class="timer-dial-box">
+        <div id="timer-dial-digits" class="dial-digits">30:00</div>
+        <span id="timer-dial-status" class="dial-status">待機中</span>
+      </div>
+
+      <div class="timer-chips-row">
+        <button class="t-chip" data-m="3">3分</button>
+        <button class="t-chip" data-m="5">5分</button>
+        <button class="t-chip" data-m="10">10分</button>
+        <button class="t-chip" data-m="15">15分</button>
+        <button class="t-chip active" data-m="30">30分</button>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button id="timer-btn-toggle" class="btn-orange" style="flex:2; padding:12px;">スタート</button>
+        <button id="timer-btn-reset" class="btn-subtle" style="flex:1;">リセット</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 作った記録追加モーダル -->
+  <div id="new-log-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <button id="new-log-close" class="modal-close-icon">✕</button>
+      <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">✏️ 週末の料理記録をつける</h3>
+      <form id="new-log-form">
+        <div class="form-group">
+          <label>作った料理名</label>
+          <input type="text" id="log-in-title" required placeholder="例: 豚バラともやしの極上ぽん酢蒸し">
+        </div>
+        <div class="form-group-row">
+          <div>
+            <label>作った日</label>
+            <input type="date" id="log-in-date">
+          </div>
+          <div>
+            <label>満足度</label>
+            <select id="log-in-rating">
+              <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ 最高！また作る</option>
+              <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ 美味しかった</option>
+              <option value="⭐⭐⭐">⭐⭐⭐ 普通に満足</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>メモ・アレンジの感想</label>
+          <textarea id="log-in-comment" rows="3" placeholder="例: ぽん酢に少しごま油を足したらコクが出て家族にも大好評だった！"></textarea>
+        </div>
+        <button type="submit" class="btn-orange" style="width:100%; padding:12px; margin-top:6px;">記録ノートに保存</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- トースト通知 -->
+  <div id="toast-bubble" class="toast-bubble hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

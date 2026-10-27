@@ -1,0 +1,17 @@
+{
+  "name": "金曜レシピ手帳",
+  "short_name": "金曜レシピ",
+  "description": "週末のごほうび＆30分時短おうちカフェ手帳。週に1回の料理を楽しむ完全無料アプリ。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdfbf7",
+  "theme_color": "#e67e22",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍮</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
